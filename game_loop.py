@@ -32,6 +32,7 @@ def game_loop(user_piece, computer_piece):
             result = check_board(user_piece, board_state)
 
             if result != "incomplete":
+                show_board(board_state)
                 print("You {} the game!".format(result))
                 return restart()
 
@@ -40,9 +41,9 @@ def game_loop(user_piece, computer_piece):
             computer_move = get_computer_move(computer_piece, board_state)
             board_state.append(computer_move)
             print("The computer played {}!".format(computer_move))
-            show_board(board_state)
             result = check_board(user_piece, board_state)
-
+            show_board(board_state)
+            
             if result != "incomplete":
                 print("You {} the game!".format(result))
                 return restart()
@@ -50,9 +51,9 @@ def game_loop(user_piece, computer_piece):
             user_move = get_user_move(user_piece, board_state)
             board_state.append(user_move)
             result = check_board(user_piece, board_state)
-            show_board(board_state)
 
             if result != "incomplete":
+                show_board(board_state)
                 print("You {} the game!".format(result))
                 return restart()
 
@@ -197,3 +198,6 @@ def restart():
 
         elif replay_game == "n":
             return False
+        
+        else:
+            print("\nInvalid response! Please try again.")
