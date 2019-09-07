@@ -1,5 +1,5 @@
 from game_loop import check_board
-from move_generation import play_center, play_empty_corner, play_empty_side
+from move_generation import play_opposite_corner
 
 
 # ["X1", "O2", "O3", "O4", "X5", "O6", "X7", "O8", "X9"]
@@ -18,9 +18,5 @@ tests = [["X1", "O2", "O3", "O4", "X5", "O6", "X7", "O8", "X9"],
 #     result = check_board("O", test)
 #     print(result)
 
-print(play_center("O", ["X1"]))
-print(play_empty_corner("O", ["X1"]))
-print(play_center("O", ["X5"]))
-print(play_empty_corner("O", ["X1", "O3", "X7", "O9"]))
-print(play_empty_side("O", ["X5"]))
-print(play_empty_side("O", ["X2", "O4", "X6", "O8"]))
+print(play_opposite_corner("X", ["X5"]))
+

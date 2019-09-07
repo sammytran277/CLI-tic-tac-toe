@@ -50,8 +50,6 @@ def get_computer_move(computer_piece, board_state):
         return check_eight
 
 
-    
-
 def play_win(computer_piece, board_state):
     """If there is a win on the board for the computer, play it"""
 
@@ -216,6 +214,28 @@ def play_center(computer_piece, board_state):
 def play_opposite_corner(computer_piece, board_state):
     """Play on the corner opposite of the user's last move"""
 
+    # All the possible corner pairs in Tic-Tac-Toe
+    corner_pairs = [[1, 9], [3, 7]]
+
+    squares_played = []
+    last_square_played = int(board_state[-1][1])
+
+    # Get all the squares from the board_state so we can check availability
+    for move in board_state:
+        squares_played.append(int(move[1]))
+
+    # Check if the last move played is on a corner
+    for pair in corner_pairs:
+        if last_square_played in pair:
+            pair.remove(last_square_played)
+
+            # Return the opposite corner if it is available
+            if pair[0] not in squares_played:
+                return "{}{}".format(computer_piece, pair[0])
+            
+            else:
+                return None
+    
     return None
 
 
