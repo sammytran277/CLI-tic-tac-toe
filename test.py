@@ -1,5 +1,5 @@
 from game_loop import check_board
-from move_generation import play_opposite_corner
+from move_generation import threaten_win
 
 
 # ["X1", "O2", "O3", "O4", "X5", "O6", "X7", "O8", "X9"]
@@ -18,5 +18,4 @@ tests = [["X1", "O2", "O3", "O4", "X5", "O6", "X7", "O8", "X9"],
 #     result = check_board("O", test)
 #     print(result)
 
-print(play_opposite_corner("X", ["X5"]))
 

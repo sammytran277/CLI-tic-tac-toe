@@ -21,6 +21,11 @@ def get_computer_move(computer_piece, board_state):
 
     check_three = play_fork(computer_piece, board_state)
 
+    check_extra = threaten_win(computer_piece, board_state)
+
+    if check_extra != None:
+        return check_extra
+
     if check_three != None:
         return check_three
 
@@ -160,6 +165,40 @@ def play_fork(computer_piece, board_state):
     
     # Return None if there is no immediate win in the current position
     return None
+
+
+def threaten_win(computer_piece, board_state):
+
+    possible_double_forks = [[1, 5, 9], [3, 5, 7]]
+
+    # Create a list of moves played by both players so far
+    computer_move_history = []
+    user_move_history = []
+
+    # Append all the computer moves to computer_move_history
+    for move in board_state:
+        if move[0] == computer_piece:
+            computer_move_history.append(int(move[1]))
+
+        else:
+            user_move_history.append(int(move[1]))
+
+    for fork in possible_double_forks:
+        if fork[0] in computer_move_history:
+            if fork[1] in user_move_history and fork[2] in user_move_history:
+                for corner in [1, 3, 7, 9]:
+                    if corner not in user_move_history and corner not in computer_move_history:
+                        return "{}{}".format(computer_piece, corner)
+                
+        elif fork[2] in computer_move_history:
+            if fork[0] in user_move_history and fork[1] in user_move_history:
+                for corner in [1, 3, 7, 9]:
+                    if corner not in user_move_history and corner not in computer_move_history:
+                        return "{}{}".format(computer_piece, corner)
+
+    return None
+    
+
 
 
 def block_fork(computer_piece, board_state):
