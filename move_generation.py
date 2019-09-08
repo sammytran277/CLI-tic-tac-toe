@@ -9,50 +9,41 @@ def get_computer_move(computer_piece, board_state):
        Newell and Simon's 1972 Tic-Tac-Toe program explain here:
        https://en.wikipedia.org/wiki/Tic-tac-toe#Strategy"""
 
-    check_one = play_win(computer_piece, board_state)
+    # All the functions the computer will use to generate a move
+    functions = [play_win, block_win, play_fork, threaten_win, 
+                 block_fork, play_center, play_opposite_corner, 
+                 play_empty_corner, play_empty_side]
 
-    if check_one != None:
-        return check_one
+    # Iterate through all the functions until a move is returned
+    for function in functions:
+        move = function(computer_piece, board_state)
 
-    check_two = block_win(computer_piece, board_state)
+        if move != None:
+            return move
 
-    if check_two != None:
-        return check_two
 
-    check_three = play_fork(computer_piece, board_state)
+def get_computer_move_history(piece, board_state):
+    """Get the move history of the computer"""
 
-    check_extra = threaten_win(computer_piece, board_state)
+    move_history = []
 
-    if check_extra != None:
-        return check_extra
+    for move in board_state:
+        if move[0] == piece:
+            move_history.append(int(move[1]))
 
-    if check_three != None:
-        return check_three
+    return move_history
 
-    check_four = block_fork(computer_piece, board_state)
 
-    if check_four != None:
-        return check_four
+def get_user_move_history(piece, board_state):
+    """Get the move history of the user"""
 
-    check_five = play_center(computer_piece, board_state)
+    move_history = []
 
-    if check_five != None:
-        return check_five
+    for move in board_state:
+        if move[0] != piece:
+            move_history.append(int(move[1]))
 
-    check_six = play_opposite_corner(computer_piece, board_state)
-
-    if check_six != None:
-        return check_six
-
-    check_seven = play_empty_corner(computer_piece, board_state)
-
-    if check_seven != None:
-        return check_seven
-
-    check_eight = play_empty_side(computer_piece, board_state)
-
-    if check_eight != None:
-        return check_eight
+    return move_history
 
 
 def play_win(computer_piece, board_state):
@@ -62,18 +53,10 @@ def play_win(computer_piece, board_state):
     possible_wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7],
                      [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
     
-    # Create a list of moves played by both players so far
-    computer_move_history = []
-    user_move_history = []
+    # Get list of moves played by both players so far
+    computer_move_history = get_computer_move_history(computer_piece, board_state)
+    user_move_history = get_user_move_history(computer_piece, board_state)
 
-    # Append all the computer moves to computer_move_history
-    for move in board_state:
-        if move[0] == computer_piece:
-            computer_move_history.append(int(move[1]))
-
-        else:
-            user_move_history.append(int(move[1]))
-    
     # Append all the moves to the list where they belong
     for win in possible_wins:
         counter = 0
@@ -98,17 +81,9 @@ def block_win(computer_piece, board_state):
     possible_wins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7],
                      [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]]
     
-    # Create a list of moves played by both players so far
-    computer_move_history = []
-    user_move_history = []
-
-    # Append all the moves to the list where they belong
-    for move in board_state:
-        if move[0] != computer_piece:
-            user_move_history.append(int(move[1]))
-
-        else:
-            computer_move_history.append(int(move[1]))
+    # Get list of moves played by both players so far
+    computer_move_history = get_computer_move_history(computer_piece, board_state)
+    user_move_history = get_user_move_history(computer_piece, board_state)
     
     # Check which win has two squares filled and play the missing one
     for win in possible_wins:
@@ -137,17 +112,9 @@ def play_fork(computer_piece, board_state):
                      [4, 7, 9], [4, 8, 9], [6, 7, 8], [6, 7, 9],
                      [1, 2, 6], [1, 3, 6], [3, 4, 5], [3, 4, 6]]
     
-    # Create a list of moves played by both players so far
-    computer_move_history = []
-    user_move_history = []
-
-    # Append all the computer moves to computer_move_history
-    for move in board_state:
-        if move[0] == computer_piece:
-            computer_move_history.append(int(move[1]))
-
-        else:
-            user_move_history.append(int(move[1]))
+    # Get list of moves played by both players so far
+    computer_move_history = get_computer_move_history(computer_piece, board_state)
+    user_move_history = get_user_move_history(computer_piece, board_state)
     
     # Append all the moves to the list where they belong
     for win in possible_wins:
@@ -168,21 +135,16 @@ def play_fork(computer_piece, board_state):
 
 
 def threaten_win(computer_piece, board_state):
+    """Handles a special case of forks where the computer needs to
+       threaten a win instead of blocking a fork"""
 
     possible_double_forks = [[1, 5, 9], [3, 5, 7]]
 
-    # Create a list of moves played by both players so far
-    computer_move_history = []
-    user_move_history = []
+    # Get list of moves played by both players so far
+    computer_move_history = get_computer_move_history(computer_piece, board_state)
+    user_move_history = get_user_move_history(computer_piece, board_state)
 
-    # Append all the computer moves to computer_move_history
-    for move in board_state:
-        if move[0] == computer_piece:
-            computer_move_history.append(int(move[1]))
-
-        else:
-            user_move_history.append(int(move[1]))
-
+    # Check for the special case and return an available corner move
     for fork in possible_double_forks:
         if fork[0] in computer_move_history:
             if fork[1] in user_move_history and fork[2] in user_move_history:
@@ -196,6 +158,7 @@ def threaten_win(computer_piece, board_state):
                     if corner not in user_move_history and corner not in computer_move_history:
                         return "{}{}".format(computer_piece, corner)
 
+    # If the special case is not on the board, return None
     return None
     
 
@@ -211,17 +174,9 @@ def block_fork(computer_piece, board_state):
                      [4, 7, 9], [4, 8, 9], [6, 7, 8], [6, 7, 9],
                      [1, 2, 6], [1, 3, 6], [3, 4, 5], [3, 4, 6]]
     
-    # Create a list of moves played by both players so far
-    computer_move_history = []
-    user_move_history = []
-
-    # Append all the moves to the list where they belong
-    for move in board_state:
-        if move[0] != computer_piece:
-            user_move_history.append(int(move[1]))
-
-        else:
-            computer_move_history.append(int(move[1]))
+    # Get list of moves played by both players so far
+    computer_move_history = get_computer_move_history(computer_piece, board_state)
+    user_move_history = get_user_move_history(computer_piece, board_state)
     
     # Check which win has two squares filled and play the missing one
     for win in possible_wins:
